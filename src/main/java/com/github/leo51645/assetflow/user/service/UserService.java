@@ -28,7 +28,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserResponseDto createUser(@Valid RegisterRequestDto request) {
+    public UserEntity createUser(@Valid RegisterRequestDto request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
         }
@@ -36,37 +36,33 @@ public class UserService {
         UserEntity userEntity = userDtoMapper.toUserEntity(request, passwordEncoder);
         UserEntity savedUser = userRepository.save(userEntity);
         log.info("User with email {} registered successfully", request.getEmail());
-        return userDtoMapper.toUserResponseDto(savedUser);
+        return savedUser;
     }
 
     @Transactional
-    public UserResponseDto getUserById(UserEntity user) {
+    public UserEntity getUserById(UserEntity user) {
         Optional<UserEntity> userEntity = userRepository.findById(user.getId());
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("User with id " + user.getId() + " not found");
         } else {
-            return userDtoMapper.toUserResponseDto(userEntity.get());
+            return userEntity.get();
         }
     }
 
     @Transactional
-    public UserResponseDto getUserByEmail(UserEntity user) {
+    public UserEntity getUserByEmail(UserEntity user) {
         Optional<UserEntity> userEntity = userRepository.findByEmail(user.getEmail());
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("User with email " + user.getEmail() + " not found");
         } else {
-            return userDtoMapper.toUserResponseDto(userEntity.get());
+            return userEntity.get();
         }
     }
 
     @Transactional
-    public List<UserResponseDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(user -> userDtoMapper.toUserResponseDto(user))
-                .collect(Collectors.toList());
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
     }
-
     // TODO: Update User CRUD Functionality
 
     @Transactional

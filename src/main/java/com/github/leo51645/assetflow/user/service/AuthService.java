@@ -1,9 +1,9 @@
 package com.github.leo51645.assetflow.user.service;
 
+import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
-import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +17,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final UserDtoMapper userDtoMapper;
 
     @Transactional
     public AuthResponseDto register(RegisterRequestDto request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailAlreadyExistsException("Email already registered: " + request.getEmail());
-        }
 
-        UserEntity requestUser = UserEntity.builder()
-                .email(request.getEmail())
-                .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .birthday(request.getBirthday())
-                .build();
+        UserEntity userEntity = userService.createUser(request);
 
-        UserEntity savedUser = userRepository.save(requestUser);
-        log.info("User with email {} registered successfully", request.getEmail());
-
-        return AuthResponseDto.builder()
-                .id(savedUser.getId())
-                .email(savedUser.getEmail())
-                .firstname(savedUser.getFirstname())
-                .lastname(savedUser.getLastname())
-                .birthday(savedUser.getBirthday())
-                .createdAt(savedUser.getCreatedAt())
-                .build();
+        return userDtoMapper.toAuthResponseDto(userEntity,null, null); // TODO: JWT hier einfügen
     }
 }
