@@ -1,7 +1,7 @@
 package com.github.leo51645.assetflow.user.service;
 
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
-import com.github.leo51645.assetflow.user.domain.dto.response.RegisterResponseDto;
+import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public RegisterResponseDto register(RegisterRequestDto request) {
+    public AuthResponseDto register(RegisterRequestDto request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already registered: " + request.getEmail());
         }
@@ -36,7 +36,7 @@ public class UserService {
         UserEntity savedUser = userRepository.save(requestUser);
         log.info("User with email {} registered successfully", request.getEmail());
 
-        return RegisterResponseDto.builder()
+        return AuthResponseDto.builder()
                 .id(savedUser.getId())
                 .email(savedUser.getEmail())
                 .firstname(savedUser.getFirstname())
