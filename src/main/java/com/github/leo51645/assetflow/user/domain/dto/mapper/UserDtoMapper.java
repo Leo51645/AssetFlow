@@ -1,6 +1,5 @@
 package com.github.leo51645.assetflow.user.domain.dto.mapper;
 
-import com.github.leo51645.assetflow.user.domain.dto.request.LoginRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
