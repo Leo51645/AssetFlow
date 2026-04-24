@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.user.security.config;
+package com.github.leo51645.assetflow.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
