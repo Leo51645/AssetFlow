@@ -49,15 +49,12 @@ public class AuthService {
         UserEntity user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.getEmail()));
 
-        log.info("User authenticated: {}", request.getEmail());
+        log.info("User authenticated: {} with role: {}", request.getEmail(), user.getRole());
 
         String accessToken = jwtService.generateToken(user);
         String refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return AuthResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return userDtoMapper.toAuthResponseDto(user, accessToken, refreshToken);
     }
 
     @Transactional
