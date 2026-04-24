@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.user.domain.dto.response;
+package com.github.leo51645.assetflow.user.security.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;

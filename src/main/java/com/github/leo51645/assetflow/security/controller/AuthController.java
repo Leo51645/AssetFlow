@@ -1,8 +1,6 @@
-package com.github.leo51645.assetflow.user.controller;
+package com.github.leo51645.assetflow.user.security.auth;
 
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
-import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
-import com.github.leo51645.assetflow.user.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

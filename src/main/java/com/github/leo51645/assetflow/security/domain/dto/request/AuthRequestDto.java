@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.user.domain.dto.request;
+package com.github.leo51645.assetflow.user.security.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDto {
+public class AuthRequestDto {
 
     @Email(message = "Invalid email")
     @NotBlank(message = "Email is required")
