@@ -19,3 +19,15 @@ spring:
       hibernate:
         format_sql: true
     database: postgresql
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration: 900000 # 15 minutes
+      refresh-token:
+        expiration: 604800000 # 7 days
+      cookie:
+        path: /
+        secure: false
+        same-site: Lax

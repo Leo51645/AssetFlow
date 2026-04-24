@@ -1,5 +1,7 @@
-package com.github.leo51645.assetflow.user.security.repository;
+package com.github.leo51645.assetflow.security.repository;
 
+import com.github.leo51645.assetflow.security.domain.entity.RefreshTokenEntity;
+import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
