@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.user.security.auth;
+package com.github.leo51645.assetflow.security.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,7 +1,7 @@
 package com.github.leo51645.assetflow.user.domain.dto.mapper;
 
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
-import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
+import com.github.leo51645.assetflow.security.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
