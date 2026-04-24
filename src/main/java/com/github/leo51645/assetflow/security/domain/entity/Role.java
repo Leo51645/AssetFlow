@@ -1,4 +1,7 @@
 package com.github.leo51645.assetflow.security.domain.entity;
 
 public enum Role {
+    USER,
+    ADMIN
 }
+
