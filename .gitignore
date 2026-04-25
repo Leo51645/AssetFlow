@@ -10,6 +10,7 @@ target/
 .env.*.local
 *.key
 *.pem
+application-local.yaml
 
 # IDE
 .idea
