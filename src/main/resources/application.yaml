@@ -23,6 +23,7 @@ application:
       expiration: ${JWT_EXPIRATION:900000}
       refresh-token:
         expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+      cookie-name: refresh-token
       cookie:
         path: /
         secure: ${SERVER_COOKIE_SECURE:true}
