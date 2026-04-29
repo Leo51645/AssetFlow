@@ -2,6 +2,7 @@ package com.github.leo51645.assetflow.security.controller;
 
 import com.github.leo51645.assetflow.security.domain.dto.request.AuthRequestDto;
 import com.github.leo51645.assetflow.security.domain.dto.response.AuthResponseDto;
+import com.github.leo51645.assetflow.security.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.security.service.AuthService;
 import com.github.leo51645.assetflow.security.service.CookieService;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
@@ -27,7 +28,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(@RequestBody @Valid RegisterRequestDto request, HttpServletResponse response) {
         AuthResponseDto responseDto = authService.register(request);
-
+        cookieService.addRefreshTokenCookie(response, responseDto.getRefreshToken());
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -49,7 +50,7 @@ public class AuthController {
     ) {
         String refreshToken = cookieService.extractRefreshTokenFromCookie(request);
         if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new MissingRefreshTokenException("Refresh token not found in cookie");
         }
 
         AuthResponseDto responseDto = authService.refreshToken(refreshToken);

@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -26,17 +27,20 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        log.error("Unauthorized error: {}", authException.getMessage());
+        String errorId = UUID.randomUUID().toString();
+
+        log.warn("Unauthorized error: {}", authException.getMessage());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final ErrorResponse body = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(Instant.now())
                 .status(HttpServletResponse.SC_UNAUTHORIZED)
                 .error("Unauthorized")
                 .message(authException.getMessage())
-                .path(request.getServletPath())
+                .path(request.getRequestURI())
+                .errorId(errorId)
                 .build();
 
         response.getWriter().write(objectMapper.writeValueAsString(body));
