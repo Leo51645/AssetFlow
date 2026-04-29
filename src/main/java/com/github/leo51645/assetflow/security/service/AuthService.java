@@ -37,7 +37,7 @@ public class AuthService {
         String accessToken = jwtService.generateToken(userEntity);
         String refreshToken = refreshTokenService.createRefreshToken(userEntity);
 
-        return userDtoMapper.toAuthResponseDto(userEntity,accessToken, refreshToken);
+        return userDtoMapper.toAuthResponseDto(accessToken, refreshToken);
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class AuthService {
         String accessToken = jwtService.generateToken(user);
         String refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return userDtoMapper.toAuthResponseDto(user, accessToken, refreshToken);
+        return userDtoMapper.toAuthResponseDto(accessToken, refreshToken);
     }
 
     @Transactional

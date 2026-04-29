@@ -23,13 +23,10 @@ public class UserDtoMapper {
                 .build();
     }
 
-    public AuthResponseDto toAuthResponseDto(UserEntity userEntity, String accessToken, String refreshToken) {
+    public AuthResponseDto toAuthResponseDto(String accessToken, String refreshToken) {
         return AuthResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
-                .role(userEntity.getRole())
                 .build();
     }
 

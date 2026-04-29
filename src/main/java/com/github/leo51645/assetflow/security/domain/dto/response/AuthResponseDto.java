@@ -13,8 +13,4 @@ public class AuthResponseDto {
 
     @JsonIgnore
     private String refreshToken;
-
-    private Long id;
-    private String email;
-    private Role role;
 }
