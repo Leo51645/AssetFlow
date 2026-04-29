@@ -2,7 +2,7 @@ package com.github.leo51645.assetflow.security.controller;
 
 import com.github.leo51645.assetflow.security.domain.dto.request.AuthRequestDto;
 import com.github.leo51645.assetflow.security.domain.dto.response.AuthResponseDto;
-import com.github.leo51645.assetflow.security.exception.MissingRefreshTokenException;
+import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.security.service.AuthService;
 import com.github.leo51645.assetflow.security.service.CookieService;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;

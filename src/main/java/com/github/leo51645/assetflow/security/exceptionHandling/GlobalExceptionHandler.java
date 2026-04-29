@@ -1,5 +1,6 @@
-package com.github.leo51645.assetflow.security.exception;
+package com.github.leo51645.assetflow.security.exceptionHandling;
 
+import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j

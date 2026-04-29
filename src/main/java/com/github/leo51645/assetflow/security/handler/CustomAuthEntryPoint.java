@@ -1,6 +1,6 @@
 package com.github.leo51645.assetflow.security.handler;
 
-import com.github.leo51645.assetflow.security.exception.ErrorResponse;
+import com.github.leo51645.assetflow.security.exceptionHandling.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

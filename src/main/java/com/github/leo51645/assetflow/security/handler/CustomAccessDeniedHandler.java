@@ -1,7 +1,7 @@
 package com.github.leo51645.assetflow.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.leo51645.assetflow.security.exception.ErrorResponse;
+import com.github.leo51645.assetflow.security.exceptionHandling.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

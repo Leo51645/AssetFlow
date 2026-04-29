@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.security.exception;
+package com.github.leo51645.assetflow.security.exceptionHandling;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

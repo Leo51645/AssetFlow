@@ -3,7 +3,7 @@ package com.github.leo51645.assetflow.security.service;
 import com.github.leo51645.assetflow.security.domain.dto.request.AuthRequestDto;
 import com.github.leo51645.assetflow.security.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.security.domain.entity.RefreshTokenEntity;
-import com.github.leo51645.assetflow.security.exception.InvalidRefreshTokenException;
+import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
