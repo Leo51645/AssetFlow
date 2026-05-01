@@ -4,18 +4,27 @@ server:
 spring:
   application:
     name: AssetFlow
-
   datasource:
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    url: jdbc:postgresql://localhost:5432/${DB_NAME}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: false
-    open-in-view: false
+      ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
-    database: postgresql
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration: ${JWT_EXPIRATION:900000}
+      refresh-token:
+        expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+      cookie-name: refresh-token
+      cookie:
+        path: /
+        secure: ${SERVER_COOKIE_SECURE:true}
+        same-site: ${SERVER_COOKIE_SAME_SITE:Strict}

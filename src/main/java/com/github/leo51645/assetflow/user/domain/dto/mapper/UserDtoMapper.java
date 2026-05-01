@@ -1,7 +1,8 @@
 package com.github.leo51645.assetflow.user.domain.dto.mapper;
 
+import com.github.leo51645.assetflow.security.domain.dto.response.AuthResponseDto;
+import com.github.leo51645.assetflow.security.domain.entity.Role;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
-import com.github.leo51645.assetflow.user.domain.dto.response.AuthResponseDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,24 +19,25 @@ public class UserDtoMapper {
                 .lastName(userEntity.getLastname())
                 .birthday(userEntity.getBirthday())
                 .createdAt(userEntity.getCreatedAt())
+                .role(userEntity.getRole())
                 .build();
     }
 
-    public AuthResponseDto toAuthResponseDto(UserEntity userEntity, String accessToken, String refreshToken) {
+    public AuthResponseDto toAuthResponseDto(String accessToken, String refreshToken) {
         return AuthResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
                 .build();
     }
 
     public UserEntity toUserEntity(RegisterRequestDto request, PasswordEncoder passwordEncoder) {
-        return UserEntity.builder().email(request.getEmail())
+        return UserEntity.builder()
+                .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .birthday(request.getBirthday())
+                .role(Role.USER)
                 .build();
     }
 
