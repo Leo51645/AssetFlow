@@ -85,11 +85,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(UserEntity user) {
-        if(!userRepository.existsById(user.getId())) {
-            throw new UserNotFoundException("User with id " + user.getId() + " not found");
-        }
-        userRepository.delete(user);
+    public void deleteUser(Long id) {
+        UserEntity userEntity = getUserById(id);
+        userRepository.delete(userEntity);
+        log.info("User with id {} deleted successfully", id);
     }
 
 }
