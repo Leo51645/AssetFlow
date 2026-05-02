@@ -7,15 +7,14 @@ import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,19 +37,19 @@ public class UserService {
         return savedUser;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserEntity getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
@@ -86,11 +85,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(UserEntity user) {
-        if(!userRepository.existsById(user.getId())) {
-            throw new UserNotFoundException("User with id " + user.getId() + " not found");
-        }
-        userRepository.delete(user);
+    public void deleteUser(Long id) {
+        UserEntity userEntity = getUserById(id);
+        userRepository.delete(userEntity);
+        log.info("User with id {} deleted successfully", id);
     }
 
 }

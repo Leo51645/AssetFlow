@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserService userService;
-    private final UserRepository userRepository;
     private final UserDtoMapper userDtoMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -46,8 +45,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.getEmail()));
+        UserEntity user = userService.getUserByEmail(request.getEmail());
 
         log.info("User authenticated: {} with role: {}", request.getEmail(), user.getRole());
 

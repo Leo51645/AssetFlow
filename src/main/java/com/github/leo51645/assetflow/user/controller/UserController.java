@@ -1,5 +1,6 @@
 package com.github.leo51645.assetflow.user.controller;
 
+import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -14,18 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
+    private UserDtoMapper userDtoMapper;
+
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> getCurrentUser(@AuthenticationPrincipal UserEntity userEntity) {
-        UserResponseDto responseDto = UserResponseDto.builder()
-                .id(userEntity.getId())
-                .email(userEntity.getEmail())
-                .firstName(userEntity.getFirstname())
-                .lastName(userEntity.getLastname())
-                .birthday(userEntity.getBirthday())
-                .createdAt(userEntity.getCreatedAt())
-                .role(userEntity.getRole())
-                .build();
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userEntity));
     }
 
 }
