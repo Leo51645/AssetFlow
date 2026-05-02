@@ -8,5 +8,5 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
-public record UserResponseDto(Long id, String email, String firstName, String lastName, LocalDateTime birthday, Instant createdAt, Role role) {
+public record UserResponseDto(Long id, String email, String firstName, String lastName, LocalDate birthday, Instant createdAt, Role role) {
 }
