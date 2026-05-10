@@ -8,7 +8,6 @@ import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
 import com.github.leo51645.assetflow.user.util.UserUtility;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,9 +27,9 @@ public class UserService {
     private UserUtility userUtility;
 
     @Transactional
-    public UserEntity createUser(@Valid RegisterRequestDto request) {
+    public UserEntity createUser(RegisterRequestDto request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+            throw new EmailAlreadyExistsException("Email already exists: " + userUtility.maskEmail(request.getEmail()));
         }
 
         UserEntity userEntity = userDtoMapper.toUserEntity(request, passwordEncoder);
@@ -58,14 +57,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity updateUser(Long id_oldUser, @Valid UpdateUserRequestDto request) {
+    public UserEntity updateUser(Long id_oldUser, UpdateUserRequestDto request) {
 
         UserEntity oldUserEntity = userRepository.findById(id_oldUser)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id_oldUser + " not found"));
 
         if (request.getEmail() != null) {
             if (!oldUserEntity.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
-                throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+                throw new EmailAlreadyExistsException("Email already exists: " + userUtility.maskEmail(request.getEmail()));
             }
             oldUserEntity.setEmail(request.getEmail());
         }
@@ -77,9 +76,6 @@ public class UserService {
         }
         if (request.getBirthday() != null) {
             oldUserEntity.setBirthday(request.getBirthday());
-        }
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            oldUserEntity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         }
 
         UserEntity updatedUser = userRepository.save(oldUserEntity);
