@@ -1,5 +1,6 @@
 package com.github.leo51645.assetflow.user.service;
 
+import com.github.leo51645.assetflow.security.service.RefreshTokenService;
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.DeleteUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
@@ -28,6 +29,7 @@ public class UserService {
     private final UserDtoMapper userDtoMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserUtility userUtility;
+    private final RefreshTokenService  refreshTokenService;
 
     @Transactional
     public UserEntity createUser(RegisterRequestDto request) {
@@ -104,6 +106,7 @@ public class UserService {
     public void deleteUserById(Long id) {
         UserEntity userEntity = getUserById(id);
         userRepository.delete(userEntity);
+        refreshTokenService.deleteAllTokensByUser(userEntity);
         log.info("User with id {} was successfully deleted by ADMIN", id);
     }
 
@@ -117,6 +120,7 @@ public class UserService {
         }
 
         userRepository.delete(userEntity);
+        refreshTokenService.deleteAllTokensByUser(userEntity);
         log.info("User with id {} deleted successfully", id);
     }
 
