@@ -77,17 +77,4 @@ public class AuthService {
                 .refreshToken(newRefreshToken)
                 .build();
     }
-
-    @Transactional
-    public void logout(String refreshToken) {
-        if (refreshToken == null || refreshToken.isBlank()) {
-            return;
-        }
-
-        refreshTokenService.validateRefreshToken(refreshToken)
-                .ifPresentOrElse(
-                        storedToken -> refreshTokenService.deleteAllTokensByUser(storedToken.getUser()),
-                        () -> log.debug("Logout skipped token cleanup because refresh token is invalid or expired")
-                );
-    }
 }
