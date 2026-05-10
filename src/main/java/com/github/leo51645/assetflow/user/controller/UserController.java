@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.user.controller;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
+import com.github.leo51645.assetflow.user.domain.dto.request.DeleteUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdatePasswordRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
@@ -70,8 +71,8 @@ public class UserController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserEntity userEntity) {
-        userService.deleteUserById(userEntity.getId());
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserEntity userEntity, @Valid @RequestBody DeleteUserRequestDto request) {
+        userService.deleteUser(userEntity.getId(), request);
         return ResponseEntity.noContent().build();
     }
 }
