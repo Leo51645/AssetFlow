@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.user.service;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
+import com.github.leo51645.assetflow.user.domain.dto.request.DeleteUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdatePasswordRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
@@ -85,6 +86,7 @@ public class UserService {
         return updatedUser;
     }
 
+    @Transactional
     public void updatePassword(Long oldUserId, UpdatePasswordRequestDto request) {
         UserEntity oldUserEntity = userRepository.findById(oldUserId)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + oldUserId + " not found"));
@@ -99,8 +101,21 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUserById(Long id) {
         UserEntity userEntity = getUserById(id);
+        userRepository.delete(userEntity);
+        log.info("User with id {} was successfully deleted by ADMIN", id);
+    }
+
+    @Transactional
+    public void deleteUser(Long id, DeleteUserRequestDto request) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), userEntity.getPasswordHash())) {
+            throw new InvalidPasswordException("Current password is incorrect");
+        }
+
         userRepository.delete(userEntity);
         log.info("User with id {} deleted successfully", id);
     }

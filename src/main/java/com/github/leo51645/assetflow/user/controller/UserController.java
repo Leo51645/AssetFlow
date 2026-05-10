@@ -50,15 +50,28 @@ public class UserController {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.getUserByEmail(email)));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/me")
     public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UpdateUserRequestDto updateUserRequestDto, @AuthenticationPrincipal UserEntity userEntity) {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.updateUser(userEntity.getId(), updateUserRequestDto)));
     }
 
     @PatchMapping("/me/password")
-    public ResponseEntity updatePassword(@RequestBody @Valid UpdatePasswordRequestDto updatePasswordRequestDto,
+    public ResponseEntity<Void> updatePassword(@RequestBody @Valid UpdatePasswordRequestDto updatePasswordRequestDto,
                                                           @AuthenticationPrincipal UserEntity userEntity) {
         userService.updatePassword(userEntity.getId(), updatePasswordRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserEntity userEntity) {
+        userService.deleteUserById(userEntity.getId());
         return ResponseEntity.noContent().build();
     }
 }
