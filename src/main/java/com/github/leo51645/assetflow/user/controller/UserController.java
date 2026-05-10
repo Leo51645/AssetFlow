@@ -58,7 +58,7 @@ public class UserController {
     @PatchMapping("/me/password")
     public ResponseEntity updatePassword(@RequestBody @Valid UpdatePasswordRequestDto updatePasswordRequestDto,
                                                           @AuthenticationPrincipal UserEntity userEntity) {
-        userService.
-        return ResponseEntity.ok("");
+        userService.updatePassword(userEntity.getId(), updatePasswordRequestDto);
+        return ResponseEntity.noContent().build();
     }
 }

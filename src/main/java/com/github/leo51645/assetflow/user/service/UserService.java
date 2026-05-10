@@ -85,14 +85,17 @@ public class UserService {
         return updatedUser;
     }
 
-    public UserEntity updatePassword(Long id_oldUser, UpdatePasswordRequestDto request) {
+    public void updatePassword(Long oldUserId, UpdatePasswordRequestDto request) {
+        UserEntity oldUserEntity = userRepository.findById(oldUserId)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + oldUserId + " not found"));
 
-        UserEntity oldUserEntity = userRepository.findById(id_oldUser)
-                .orElseThrow(() -> new UserNotFoundException("User with id " + id_oldUser + " not found"));
-
-        if (!passwordEncoder.matches(oldUserEntity.getPassword(), request.getOldPassword())) {
-            throw new InvalidPasswordException("Current passwor is incorrect");
+        if (!passwordEncoder.matches(request.getOldPassword(), oldUserEntity.getPasswordHash())) {
+            throw new InvalidPasswordException("Current password is incorrect");
         }
+
+        oldUserEntity.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(oldUserEntity);
+        log.info("Password from User with id {} updated successfully", oldUserId);
     }
 
     @Transactional
