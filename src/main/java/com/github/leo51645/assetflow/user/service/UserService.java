@@ -2,9 +2,11 @@ package com.github.leo51645.assetflow.user.service;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
+import com.github.leo51645.assetflow.user.domain.dto.request.UpdatePasswordRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
+import com.github.leo51645.assetflow.user.exception.InvalidPasswordException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
 import com.github.leo51645.assetflow.user.util.UserUtility;
@@ -81,6 +83,16 @@ public class UserService {
         UserEntity updatedUser = userRepository.save(oldUserEntity);
         log.info("User with id {} updated successfully", id_oldUser);
         return updatedUser;
+    }
+
+    public UserEntity updatePassword(Long id_oldUser, UpdatePasswordRequestDto request) {
+
+        UserEntity oldUserEntity = userRepository.findById(id_oldUser)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id_oldUser + " not found"));
+
+        if (!passwordEncoder.matches(oldUserEntity.getPassword(), request.getOldPassword())) {
+            throw new InvalidPasswordException("Current passwor is incorrect");
+        }
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.user.controller;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
+import com.github.leo51645.assetflow.user.domain.dto.request.UpdatePasswordRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
@@ -52,5 +53,12 @@ public class UserController {
     @PatchMapping("/me")
     public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UpdateUserRequestDto updateUserRequestDto, @AuthenticationPrincipal UserEntity userEntity) {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.updateUser(userEntity.getId(), updateUserRequestDto)));
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity updatePassword(@RequestBody @Valid UpdatePasswordRequestDto updatePasswordRequestDto,
+                                                          @AuthenticationPrincipal UserEntity userEntity) {
+        userService.
+        return ResponseEntity.ok("");
     }
 }
