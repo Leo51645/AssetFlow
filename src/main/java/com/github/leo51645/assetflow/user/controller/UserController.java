@@ -1,17 +1,16 @@
 package com.github.leo51645.assetflow.user.controller;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
+import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,13 +37,20 @@ public class UserController {
         return ResponseEntity.ok(mappedList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.getUserById(id)));
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.getUserByEmail(email)));
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody @Valid UpdateUserRequestDto updateUserRequestDto, @AuthenticationPrincipal UserEntity userEntity) {
+        return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.updateUser(userEntity.getId(), updateUserRequestDto)));
     }
 }
