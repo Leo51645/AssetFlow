@@ -3,12 +3,16 @@ package com.github.leo51645.assetflow.user.controller;
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
+import com.github.leo51645.assetflow.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,10 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserDtoMapper userDtoMapper;
+    private final UserService userService;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> getCurrentUser(@AuthenticationPrincipal UserEntity userEntity) {
         return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userEntity));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<UserResponseDto>> getAllUser() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
 }

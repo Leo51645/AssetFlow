@@ -3,6 +3,7 @@ package com.github.leo51645.assetflow.user.service;
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
+import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
@@ -50,8 +51,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userDtoMapper::toUserResponseDto)
+                .toList();
     }
 
     @Transactional
