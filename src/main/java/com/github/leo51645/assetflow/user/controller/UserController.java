@@ -38,4 +38,9 @@ public class UserController {
         return ResponseEntity.ok(mappedList);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userDtoMapper.toUserResponseDto(userService.getUserById(id)));
+    }
+
 }
