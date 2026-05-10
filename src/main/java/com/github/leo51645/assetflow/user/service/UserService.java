@@ -3,11 +3,11 @@ package com.github.leo51645.assetflow.user.service;
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
-import com.github.leo51645.assetflow.user.domain.dto.response.UserResponseDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
+import com.github.leo51645.assetflow.user.util.UserUtility;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,7 @@ public class UserService {
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
     private PasswordEncoder passwordEncoder;
+    private UserUtility userUtility;
 
     @Transactional
     public UserEntity createUser(@Valid RegisterRequestDto request) {
@@ -46,16 +47,14 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserEntity getUserByEmail(String email) {
+        String maskedEmail = userUtility.maskEmail(email);
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + maskedEmail + " not found"));
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponseDto> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(userDtoMapper::toUserResponseDto)
-                .toList();
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Transactional
