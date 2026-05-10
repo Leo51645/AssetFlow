@@ -1,13 +1,16 @@
 package com.github.leo51645.assetflow.user.service;
 
 import com.github.leo51645.assetflow.user.domain.dto.mapper.UserDtoMapper;
+import com.github.leo51645.assetflow.user.domain.dto.request.DeleteUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.RegisterRequestDto;
+import com.github.leo51645.assetflow.user.domain.dto.request.UpdatePasswordRequestDto;
 import com.github.leo51645.assetflow.user.domain.dto.request.UpdateUserRequestDto;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
+import com.github.leo51645.assetflow.user.exception.InvalidPasswordException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import com.github.leo51645.assetflow.user.repository.UserRepository;
-import jakarta.validation.Valid;
+import com.github.leo51645.assetflow.user.util.UserUtility;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,11 +27,12 @@ public class UserService {
     private UserRepository userRepository;
     private UserDtoMapper userDtoMapper;
     private PasswordEncoder passwordEncoder;
+    private UserUtility userUtility;
 
     @Transactional
-    public UserEntity createUser(@Valid RegisterRequestDto request) {
+    public UserEntity createUser(RegisterRequestDto request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+            throw new EmailAlreadyExistsException("Email already exists: " + userUtility.maskEmail(request.getEmail()));
         }
 
         UserEntity userEntity = userDtoMapper.toUserEntity(request, passwordEncoder);
@@ -45,8 +49,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserEntity getUserByEmail(String email) {
+        String maskedEmail = userUtility.maskEmail(email);
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + maskedEmail + " not found"));
     }
 
     @Transactional(readOnly = true)
@@ -55,14 +60,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserEntity updateUser(Long id_oldUser, @Valid UpdateUserRequestDto request) {
+    public UserEntity updateUser(Long id_oldUser, UpdateUserRequestDto request) {
 
         UserEntity oldUserEntity = userRepository.findById(id_oldUser)
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id_oldUser + " not found"));
 
         if (request.getEmail() != null) {
             if (!oldUserEntity.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
-                throw new EmailAlreadyExistsException("Email already exists: " + request.getEmail());
+                throw new EmailAlreadyExistsException("Email already exists: " + userUtility.maskEmail(request.getEmail()));
             }
             oldUserEntity.setEmail(request.getEmail());
         }
@@ -75,9 +80,6 @@ public class UserService {
         if (request.getBirthday() != null) {
             oldUserEntity.setBirthday(request.getBirthday());
         }
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            oldUserEntity.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        }
 
         UserEntity updatedUser = userRepository.save(oldUserEntity);
         log.info("User with id {} updated successfully", id_oldUser);
@@ -85,8 +87,35 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long id) {
+    public void updatePassword(Long oldUserId, UpdatePasswordRequestDto request) {
+        UserEntity oldUserEntity = userRepository.findById(oldUserId)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + oldUserId + " not found"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), oldUserEntity.getPasswordHash())) {
+            throw new InvalidPasswordException("Current password is incorrect");
+        }
+
+        oldUserEntity.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(oldUserEntity);
+        log.info("Password from User with id {} updated successfully", oldUserId);
+    }
+
+    @Transactional
+    public void deleteUserById(Long id) {
         UserEntity userEntity = getUserById(id);
+        userRepository.delete(userEntity);
+        log.info("User with id {} was successfully deleted by ADMIN", id);
+    }
+
+    @Transactional
+    public void deleteUser(Long id, DeleteUserRequestDto request) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+
+        if (!passwordEncoder.matches(request.getPassword(), userEntity.getPasswordHash())) {
+            throw new InvalidPasswordException("Current password is incorrect");
+        }
+
         userRepository.delete(userEntity);
         log.info("User with id {} deleted successfully", id);
     }

@@ -3,6 +3,7 @@ package com.github.leo51645.assetflow.security.exceptionHandling;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
+import com.github.leo51645.assetflow.user.exception.InvalidPasswordException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -132,6 +133,15 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Invalid credentials attempt", errorId);
 
         return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password", request, errorId);
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(
+            InvalidPasswordException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Invalid password attempt: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
