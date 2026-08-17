@@ -30,7 +30,7 @@ public class CookieService {
     private String sameSite;
 
     public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        if (!StringUtils.hasText(refreshToken)) {
+        if (!StringUtils.hasText(refreshToken)) { // like isEmpty, isBlank & "== null"
             log.warn("Attempt to add refresh token cookie with empty token");
             return;
         }
