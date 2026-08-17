@@ -39,7 +39,7 @@ public class UserService {
 
         UserEntity userEntity = userDtoMapper.toUserEntity(request, passwordEncoder);
         UserEntity savedUser = userRepository.save(userEntity);
-        log.info("User with email {} registered successfully", request.getEmail());
+        log.info("User with email {} registered successfully", userUtility.maskEmail(request.getEmail()));
         return savedUser;
     }
 
@@ -105,8 +105,8 @@ public class UserService {
     @Transactional
     public void deleteUserById(Long id) {
         UserEntity userEntity = getUserById(id);
-        userRepository.delete(userEntity);
         refreshTokenService.deleteAllTokensByUser(userEntity);
+        userRepository.delete(userEntity);
         log.info("User with id {} was successfully deleted by ADMIN", id);
     }
 
@@ -119,8 +119,8 @@ public class UserService {
             throw new InvalidPasswordException("Current password is incorrect");
         }
 
-        userRepository.delete(userEntity);
         refreshTokenService.deleteAllTokensByUser(userEntity);
+        userRepository.delete(userEntity);
         log.info("User with id {} deleted successfully", id);
     }
 
