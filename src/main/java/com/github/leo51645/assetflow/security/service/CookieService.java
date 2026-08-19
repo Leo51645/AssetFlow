@@ -51,6 +51,7 @@ public class CookieService {
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName()))
                 .map(Cookie::getValue)
+                .filter(s -> s != null && !s.isBlank())
                 .findFirst()
                 .orElse(null);
     }
