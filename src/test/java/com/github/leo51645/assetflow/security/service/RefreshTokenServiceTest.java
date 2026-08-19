@@ -45,7 +45,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void shouldRotateRefreshTokenByDeletingOldOnesAndCreatingNewsOnes() {
+    void shouldRotateRefreshTokenByDeletingOldOnesAndCreatingNewOnes() {
         // Arrange
         UserEntity user = new UserEntity();
         String oldToken = "oldToken123";
