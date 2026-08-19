@@ -14,7 +14,7 @@ import java.util.Arrays;
 @Service
 public class CookieService {
 
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
     private static final int COOKIE_MAX_AGE_SECONDS_ON_LOGOUT = 0;
 
     @Value("${application.security.jwt.refresh-token.expiration}")
