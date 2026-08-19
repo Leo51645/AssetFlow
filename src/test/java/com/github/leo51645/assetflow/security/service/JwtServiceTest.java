@@ -1,8 +1,10 @@
 package com.github.leo51645.assetflow.security.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.User;
@@ -11,6 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +57,7 @@ class JwtServiceTest {
     }
 
     @Test
-    void shouldReturnFalseDueToInvalidSignature() {
+    void shouldReturnFalseDueToUsernameMismatch() {
         UserDetails user = new User("john", "password321", List.of());
         String token = jwtService.generateToken(new User("gustav", "password345", List.of()));
 
@@ -62,6 +65,22 @@ class JwtServiceTest {
 
         assertFalse(isValidToken);
 
+    }
+
+    @Test
+    void shouldThrowDueToInvalidSignature() {
+        UserDetails user = new User("john", "password321", List.of());
+
+        byte[] otherKeyBytes = Decoders.BASE64.decode("WjHQCGD1ieqksMY2/mcu21/RdVxNn6cz+g53t7iaESA=");
+        SecretKey otherKey = Keys.hmacShaKeyFor(otherKeyBytes);
+        String tokenWithWrongSignature = Jwts.builder()
+                .subject("john")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 900000))
+                .signWith(otherKey)
+                .compact();
+
+        assertThrows(SignatureException.class, () -> jwtService.isTokenValid(tokenWithWrongSignature, user));
     }
 
     @Test
