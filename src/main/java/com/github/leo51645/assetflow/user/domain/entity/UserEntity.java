@@ -2,7 +2,6 @@ package com.github.leo51645.assetflow.user.domain.entity;
 
 import com.github.leo51645.assetflow.security.domain.entity.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,11 +35,11 @@ public class UserEntity implements UserDetails {
 
     @Setter
     @Column(nullable = false, length = 30)
-    private String firstname;
+    private String firstName;
 
     @Setter
     @Column(nullable = false, length = 50)
-    private String lastname;
+    private String lastName;
 
     @Setter
     @Column(nullable = false)
