@@ -5,6 +5,7 @@ import com.github.leo51645.assetflow.security.exceptionHandling.exception.Missin
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.InvalidPasswordException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +141,15 @@ public class GlobalExceptionHandler {
             InvalidPasswordException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Invalid password attempt: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponse> handleWrongSignature(
+            SignatureException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Wrong token signature: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request, errorId);
     }
