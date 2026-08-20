@@ -74,10 +74,10 @@ public class UserService {
             oldUserEntity.setEmail(request.getEmail());
         }
         if (request.getFirstname() != null) {
-            oldUserEntity.setFirstname(request.getFirstname());
+            oldUserEntity.setFirstName(request.getFirstname());
         }
         if (request.getLastname() != null) {
-            oldUserEntity.setLastname(request.getLastname());
+            oldUserEntity.setLastName(request.getLastname());
         }
         if (request.getBirthday() != null) {
             oldUserEntity.setBirthday(request.getBirthday());
