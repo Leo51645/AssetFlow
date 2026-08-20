@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -119,7 +120,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
             DataIntegrityViolationException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
-        // Rohe DB-Details nur ins Log, nicht an den Client
         log.warn("ErrorId: {} | Data integrity violation: {}",
                 errorId, e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
 
@@ -152,6 +152,15 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Wrong token signature: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            AccessDeniedException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Access denied: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.FORBIDDEN,"You do not have permission to perform this action.", request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
