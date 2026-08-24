@@ -7,7 +7,8 @@ import java.net.http.HttpResponse;
 
 @Service
 public interface MarketDataService<Req, Res> { // req = request; res = response
-    HttpResponse<String> getHttpResponse(Req requestParams);
 
-    Res parseResponse(String rawResponse) throws JsonProcessingException;
+    HttpResponse<String> getHttpResponse(Req requestParam);
+
+    Res parseResponse(String rawResponse, Req requestParam) throws JsonProcessingException;
 }
