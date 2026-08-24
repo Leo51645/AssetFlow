@@ -170,7 +170,7 @@ public class GlobalExceptionHandler {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Asset not found: {}", errorId, e.getMessage());
 
-        return buildResponse(HttpStatus.NOT_FOUND, "Asset not found.", request, errorId);
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
