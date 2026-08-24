@@ -4,7 +4,8 @@ import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetE
 import com.github.leo51645.assetflow.investment_asset.exception.AssetNotFoundException;
 import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepository;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataDtoMapper;
-import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataResponseDto;
+import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataFigiResponseDto;
+import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +20,10 @@ public class InvestAssetService {
     private final MarketDataDtoMapper marketDataDtoMapper;
 
     @Transactional
-    public InvestAssetEntity saveInvestAsset(MarketDataResponseDto marketDataResponseDto) {
-        InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(marketDataResponseDto);
+    public InvestAssetEntity saveInvestAsset(MarketDataFigiResponseDto figiResponseDto, MarketDataYahooResponseDto yahooResponseDto) {
+        InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(figiResponseDto, yahooResponseDto);
 
-        return findInvestAssetByIsin(marketDataResponseDto.getIsin()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
+        return findInvestAssetByIsin(figiResponseDto.getIsin()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
     }
 
     @Transactional(readOnly = true)
