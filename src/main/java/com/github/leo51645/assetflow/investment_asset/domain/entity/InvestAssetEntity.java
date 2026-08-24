@@ -14,11 +14,9 @@ public class InvestAssetEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(nullable = false)
     private String name;
 
-    @Setter
     @Column(nullable = false, unique = true, length = 12)
     private String isin;
 
