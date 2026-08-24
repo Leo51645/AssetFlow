@@ -1,5 +1,6 @@
 package com.github.leo51645.assetflow.security.exceptionHandling;
 
+import com.github.leo51645.assetflow.investment_asset.exception.AssetNotFoundException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
@@ -161,6 +162,15 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Access denied: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.FORBIDDEN,"You do not have permission to perform this action.", request, errorId);
+    }
+
+    @ExceptionHandler(AssetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAssetNotFound(
+            AssetNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Asset not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, "Asset not found.", request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
