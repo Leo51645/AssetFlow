@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.investmentAsset.domain.entity;
+package com.github.leo51645.assetflow.investment_asset.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,5 +31,18 @@ public class InvestAssetEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    AssetType assetType;
+    private AssetType assetType;
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof InvestAssetEntity)) return false;
+        InvestAssetEntity other = (InvestAssetEntity) obj;
+        return id != null && id.equals(other.getId());
+    }
 }
