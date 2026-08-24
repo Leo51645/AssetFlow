@@ -12,6 +12,4 @@ public interface InvestAssetRepository extends JpaRepository<InvestAssetEntity, 
     Optional<InvestAssetEntity> findByIsin(String isin);
 
     boolean existsByIsin(String isin);
-
-    void deleteByIsin(String isin);
 }
