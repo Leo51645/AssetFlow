@@ -37,10 +37,10 @@ public class InvestAssetEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof InvestAssetEntity)) return false;
-        InvestAssetEntity other = (InvestAssetEntity) obj;
-        return id != null && id.equals(other.getId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InvestAssetEntity other = (InvestAssetEntity) o;
+        return id != null && id.equals(other.id);
     }
 }
