@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class InvestAssetService {
@@ -19,7 +21,8 @@ public class InvestAssetService {
     @Transactional
     public InvestAssetEntity saveInvestAsset(MarketDataResponseDto marketDataResponseDto) {
         if (investAssetRepository.existsByIsin(marketDataResponseDto.getIsin())) {
-            return findInvestAssetByIsin(marketDataResponseDto.getIsin());
+            return findInvestAssetByIsin(marketDataResponseDto.getIsin()).orElseThrow(
+                    () -> new AssetNotFoundException("Asset with ISIN " + marketDataResponseDto.getIsin() + " not found"));
         }
 
         InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(marketDataResponseDto);
@@ -28,13 +31,13 @@ public class InvestAssetService {
     }
 
     @Transactional(readOnly = true)
-    public InvestAssetEntity findInvestAssetByIsin(String isin) {
-        return investAssetRepository.findByIsin(isin).orElseThrow(() -> new AssetNotFoundException("Asset with ISIN " + isin + " not found"));
+    public Optional<InvestAssetEntity> findInvestAssetByIsin(String isin) {
+        return investAssetRepository.findByIsin(isin);
     }
 
     @Transactional(readOnly = true)
-    public InvestAssetEntity findInvestAssetById(long id) {
-        return investAssetRepository.findById(id).orElseThrow(() -> new AssetNotFoundException("Asset with ID " + id + " not found"));
+    public Optional<InvestAssetEntity> findInvestAssetById(long id) {
+        return investAssetRepository.findById(id);
     }
 
     @Transactional
@@ -44,7 +47,7 @@ public class InvestAssetService {
 
     @Transactional
     public void deleteInvestAssetByIsin(String isin) {
-        InvestAssetEntity investAssetEntity = findInvestAssetByIsin(isin);
+        InvestAssetEntity investAssetEntity = findInvestAssetByIsin(isin).orElseThrow(() -> new AssetNotFoundException("Asset with ISIN " + isin + " not found"));
         investAssetRepository.delete(investAssetEntity);
     }
 }
