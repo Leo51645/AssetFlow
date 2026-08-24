@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface InvestAssetRepository extends JpaRepository<InvestAssetEntity, Long> {
 
     Optional<InvestAssetEntity> findByIsin(String isin);
-    Optional<InvestAssetEntity> findByName(String name);
 
     boolean existsByIsin(String isin);
-    boolean existsByName(String name);
+
+    void deleteByIsin(String isin);
 }
