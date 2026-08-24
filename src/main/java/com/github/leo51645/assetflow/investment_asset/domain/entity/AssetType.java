@@ -5,5 +5,6 @@ public enum AssetType {
     ETF,
     BOND,
     CRYPTO,
-    COMMODITY; // Gold, Oil, etc.
+    COMMODITY, // Gold, Oil, etc.
+    EMPTY;
 }
