@@ -20,14 +20,9 @@ public class InvestAssetService {
 
     @Transactional
     public InvestAssetEntity saveInvestAsset(MarketDataResponseDto marketDataResponseDto) {
-        if (investAssetRepository.existsByIsin(marketDataResponseDto.getIsin())) {
-            return findInvestAssetByIsin(marketDataResponseDto.getIsin()).orElseThrow(
-                    () -> new AssetNotFoundException("Asset with ISIN " + marketDataResponseDto.getIsin() + " not found"));
-        }
-
         InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(marketDataResponseDto);
 
-        return investAssetRepository.save(investAssetEntity);
+        return findInvestAssetByIsin(marketDataResponseDto.getIsin()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
     }
 
     @Transactional(readOnly = true)
