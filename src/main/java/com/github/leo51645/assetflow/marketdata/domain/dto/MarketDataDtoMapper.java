@@ -11,6 +11,13 @@ public class MarketDataDtoMapper {
     }
 
     public InvestAssetEntity toInvestAssetEntity(MarketDataResponseDto marketDataResponseDto) {
-        return null;
+        return InvestAssetEntity.builder()
+                .id(null)
+                .name(marketDataResponseDto.getName())
+                .isin(marketDataResponseDto.getIsin())
+                .symbol(marketDataResponseDto.getSymbol())
+                .currency(marketDataResponseDto.getCurrency())
+                .assetType(marketDataResponseDto.getAssetType())
+                .build();
     }
 }
