@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 
 import java.net.http.HttpResponse;
+import java.util.List;
 
 @Service
 public interface MarketDataService<Req, Res> { // req = request; res = response
 
     HttpResponse<String> getHttpResponse(Req requestParam);
 
-    Res parseResponse(String rawResponse, Req requestParam) throws JsonProcessingException;
+    List<Res> parseResponse(String rawResponse, Req requestParam) throws JsonProcessingException;
 }
