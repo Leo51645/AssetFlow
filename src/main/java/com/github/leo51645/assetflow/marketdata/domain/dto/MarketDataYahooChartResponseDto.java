@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MarketDataYahooResponseDto {
+public class MarketDataYahooChartResponseDto {
     private Currency currency;
-    // Todo: Add more
 }

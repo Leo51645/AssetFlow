@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MarketDataDtoMapper {
 
-    public InvestAssetEntity toInvestAssetEntity(MarketDataFigiResponseDto figiResponseDto, MarketDataYahooResponseDto yahooResponseDto) {
+    public InvestAssetEntity toInvestAssetEntity(MarketDataYahooSearchResponseDto searchResponseDto, MarketDataYahooChartResponseDto chartResponseDto) {
         return InvestAssetEntity.builder()
                 .id(null)
-                .name(figiResponseDto.getName())
-                .isin(figiResponseDto.getIsin())
-                .symbol(figiResponseDto.getSymbol())
-                .currency(yahooResponseDto.getCurrency())
-                .assetType(figiResponseDto.getAssetType())
+                .name(searchResponseDto.getName())
+                .symbol(searchResponseDto.getSymbol())
+                .currency(chartResponseDto.getCurrency())
+                .assetType(searchResponseDto.getAssetType())
                 .build();
     }
 }
