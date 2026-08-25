@@ -4,8 +4,8 @@ import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetE
 import com.github.leo51645.assetflow.investment_asset.exception.AssetNotFoundException;
 import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepository;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataDtoMapper;
-import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataFigiResponseDto;
-import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooResponseDto;
+import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
+import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +20,15 @@ public class InvestAssetService {
     private final MarketDataDtoMapper marketDataDtoMapper;
 
     @Transactional
-    public InvestAssetEntity saveInvestAsset(MarketDataFigiResponseDto figiResponseDto, MarketDataYahooResponseDto yahooResponseDto) {
-        InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(figiResponseDto, yahooResponseDto);
+    public InvestAssetEntity saveInvestAsset(MarketDataYahooSearchResponseDto searchResponseDto, MarketDataYahooChartResponseDto chartResponseDto) {
+        InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(searchResponseDto, chartResponseDto);
 
-        return findInvestAssetByIsin(figiResponseDto.getIsin()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
+        return findInvestAssetBySymbol(searchResponseDto.getSymbol()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
     }
 
     @Transactional(readOnly = true)
-    public Optional<InvestAssetEntity> findInvestAssetByIsin(String isin) {
-        return investAssetRepository.findByIsin(isin);
+    public Optional<InvestAssetEntity> findInvestAssetBySymbol(String symbol) {
+        return investAssetRepository.findBySymbol(symbol);
     }
 
     @Transactional(readOnly = true)
@@ -42,8 +42,8 @@ public class InvestAssetService {
     }
 
     @Transactional
-    public void deleteInvestAssetByIsin(String isin) {
-        InvestAssetEntity investAssetEntity = findInvestAssetByIsin(isin).orElseThrow(() -> new AssetNotFoundException("Asset with ISIN " + isin + " not found"));
+    public void deleteInvestAssetBySymbol(String symbol) {
+        InvestAssetEntity investAssetEntity = findInvestAssetBySymbol(symbol).orElseThrow(() -> new AssetNotFoundException("Asset with Symbol " + symbol + " not found"));
         investAssetRepository.delete(investAssetEntity);
     }
 }

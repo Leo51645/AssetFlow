@@ -17,10 +17,7 @@ public class InvestAssetEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 12)
-    private String isin;
-
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, unique = true, length = 16)
     private String symbol;
 
     @Enumerated(EnumType.STRING)
