@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.YahooAssetNameNotFoundException;
-import com.github.leo51645.assetflow.marketdata.exception.YahooIsinNotFoundException;
-import com.github.leo51645.assetflow.marketdata.exception.YahooFinanceApiException;
-import com.github.leo51645.assetflow.marketdata.exception.YahooFinanceConnectionException;
+import com.github.leo51645.assetflow.marketdata.exception.*;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,16 +42,29 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+            if (response.statusCode() == 404) {
+                if (marketDataUtil.isIsin(requestParam)) {
+                    throw new YahooIsinNotFoundException(requestParam);
+                } else {
+                    throw new YahooAssetNameNotFoundException(requestParam);
+                }
+            }
+            if (response.statusCode() == 429) {
+                throw new YahooRateLimitException();
+            }
+            if (response.statusCode() >= 500) {
+                throw new YahooServiceException(response.statusCode());
+            }
             if (response.statusCode() != 200) {
-                throw new YahooFinanceApiException("Yahoo Finance API returned status code" + response.statusCode() + "for request parameter " + requestParam); // Todo: Global exception Handler
+                throw new YahooApiException(response.statusCode());
             }
 
             return response;
         } catch (IOException e) {
-            throw new YahooFinanceConnectionException("Failed to communicate with Yahoo Finance API"); // Todo: Global exception Handler
+            throw new YahooConnectionException(e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new YahooFinanceApiException("Yahoo Finance Request was interrupted"); // Todo: Global exception Handler
+            throw new YahooConnectionException(e);
         }
     }
 
@@ -68,7 +78,7 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
 
         if (marketDataUtil.isIsin(requestParam)) {
             if (assetsNode.isEmpty()) {
-                throw new YahooIsinNotFoundException("Isin '" + requestParam + "' not found");
+                throw new YahooIsinNotFoundException(requestParam);
             }
 
             JsonNode singleAsset = assetsNode.get(0);
@@ -76,7 +86,7 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
             parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(singleAsset));
         } else {
             if (assetsNode.isEmpty()) {
-                throw new YahooAssetNameNotFoundException("Asset name '" + requestParam + "' not found");
+                throw new YahooAssetNameNotFoundException(requestParam);
             }
 
             for (JsonNode asset : assetsNode) {
