@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.security.exceptionHandling;
 
-import com.github.leo51645.assetflow.investment_asset.exception.AssetNotFoundException;
+import com.github.leo51645.assetflow.investment_asset.exception.InvestAssetNotFoundException;
+import com.github.leo51645.assetflow.marketdata.exception.*;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
@@ -164,13 +165,67 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.FORBIDDEN,"You do not have permission to perform this action.", request, errorId);
     }
 
-    @ExceptionHandler(AssetNotFoundException.class)
+    @ExceptionHandler(InvestAssetNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAssetNotFound(
-            AssetNotFoundException e, HttpServletRequest request) {
+            InvestAssetNotFoundException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Asset not found: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooAssetNameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAssetNameNotFound(
+            YahooAssetNameNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Asset name not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooIsinNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleIsinNotFound(
+            YahooIsinNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Isin not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooConnectionException.class)
+    public ResponseEntity<ErrorResponse> handleYahooConnectionException(
+            YahooConnectionException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo connection exception: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooRateLimitException.class)
+    public ResponseEntity<ErrorResponse> handleYahooRateLimitException(
+            YahooRateLimitException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo rate limit exception: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.TOO_MANY_REQUESTS, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooServiceException.class)
+    public ResponseEntity<ErrorResponse> handleYahooServiceException(
+            YahooServiceException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo service exception: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooApiException.class)
+    public ResponseEntity<ErrorResponse> handleYahooApiException(
+            YahooApiException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo api exception: {}", errorId, e.getMessage());
+
+        return buildResponse(e.getStatus(), e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
