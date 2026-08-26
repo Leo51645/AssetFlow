@@ -6,10 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class MarketDataYahooChartResponseDto {
+    private String symbol;
+    private BigDecimal currentPrice;
+    private LocalDateTime priceUpdatedAt;
+    private BigDecimal previousClosePrice;
     private Currency currency;
 }

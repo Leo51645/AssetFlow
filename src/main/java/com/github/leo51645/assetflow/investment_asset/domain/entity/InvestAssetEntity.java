@@ -3,6 +3,9 @@ package com.github.leo51645.assetflow.investment_asset.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +30,12 @@ public class InvestAssetEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AssetType assetType;
+
+    @Column(nullable = false)
+    private BigDecimal currentPrice;
+
+    @Column(nullable = false)
+    private LocalDateTime priceUpdatedAt;
 
     @Override
     public int hashCode() {

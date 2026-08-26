@@ -15,6 +15,8 @@ public class MarketDataDtoMapper {
                 .symbol(searchResponseDto.getSymbol())
                 .currency(chartResponseDto.getCurrency())
                 .assetType(searchResponseDto.getAssetType())
+                .currentPrice(chartResponseDto.getCurrentPrice())
+                .priceUpdatedAt(chartResponseDto.getPriceUpdatedAt())
                 .build();
     }
 }
