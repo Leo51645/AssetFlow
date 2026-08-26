@@ -175,7 +175,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(YahooAssetNameNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleAssetNameNotFound(
+    public ResponseEntity<ErrorResponse> handleYahooAssetNameNotFound(
             YahooAssetNameNotFoundException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Asset name not found: {}", errorId, e.getMessage());
@@ -184,10 +184,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(YahooIsinNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleIsinNotFound(
+    public ResponseEntity<ErrorResponse> handleYahooIsinNotFound(
             YahooIsinNotFoundException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Isin not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooSymbolNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleYahooSymbolNotFound(
+            YahooSymbolNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Symbol not found: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
     }

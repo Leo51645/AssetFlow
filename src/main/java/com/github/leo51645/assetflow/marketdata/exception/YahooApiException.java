@@ -16,4 +16,9 @@ public class YahooApiException extends RuntimeException {
         super(message, cause);
         this.status = HttpStatus.INTERNAL_SERVER_ERROR;
     }
+
+    public YahooApiException(String message, HttpStatus status) {
+        super(message);
+        this.status = status;
+    }
 }
