@@ -228,6 +228,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
     }
 
+    @ExceptionHandler(YahooSymbolMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleYahooSymbolMismatch(
+            YahooSymbolMismatchException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo symbol mismatch: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
+    }
+
     @ExceptionHandler(YahooMarketDataUnavailableException.class)
     public ResponseEntity<ErrorResponse> handleYahooMarketDataUnavailable(
             YahooMarketDataUnavailableException e, HttpServletRequest request) {

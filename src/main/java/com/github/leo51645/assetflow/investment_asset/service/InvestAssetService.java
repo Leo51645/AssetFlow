@@ -6,6 +6,8 @@ import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepo
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataDtoMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
+import com.github.leo51645.assetflow.marketdata.exception.YahooApiException;
+import com.github.leo51645.assetflow.marketdata.exception.YahooSymbolMismatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,13 @@ public class InvestAssetService {
 
     @Transactional
     public InvestAssetEntity saveInvestAsset(MarketDataYahooSearchResponseDto searchResponseDto, MarketDataYahooChartResponseDto chartResponseDto) {
+        String searchSymbol = searchResponseDto.getSymbol();
+        String chartSymbol = chartResponseDto.getSymbol();
+
+        if (!searchSymbol.equals(chartSymbol)) {
+            throw new YahooSymbolMismatchException(searchSymbol, chartSymbol);
+        }
+
         InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(searchResponseDto, chartResponseDto);
 
         return findInvestAssetBySymbol(searchResponseDto.getSymbol()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
