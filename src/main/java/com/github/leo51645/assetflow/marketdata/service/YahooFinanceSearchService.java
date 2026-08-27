@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YahooFinanceSearchService implements MarketDataService <String, MarketDataYahooSearchResponseDto> {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final MarketDataUtil marketDataUtil;
 
