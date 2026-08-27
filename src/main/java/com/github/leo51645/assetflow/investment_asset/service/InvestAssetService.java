@@ -6,7 +6,6 @@ import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepo
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataDtoMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.YahooApiException;
 import com.github.leo51645.assetflow.marketdata.exception.YahooSymbolMismatchException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class InvestAssetService {
     private final MarketDataDtoMapper marketDataDtoMapper;
 
     @Transactional
-    public InvestAssetEntity saveInvestAsset(MarketDataYahooSearchResponseDto searchResponseDto, MarketDataYahooChartResponseDto chartResponseDto) {
+    public InvestAssetEntity createInvestAsset(MarketDataYahooSearchResponseDto searchResponseDto, MarketDataYahooChartResponseDto chartResponseDto) {
         String searchSymbol = searchResponseDto.getSymbol();
         String chartSymbol = chartResponseDto.getSymbol();
 
@@ -32,16 +31,16 @@ public class InvestAssetService {
 
         InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(searchResponseDto, chartResponseDto);
 
-        return findInvestAssetBySymbol(searchResponseDto.getSymbol()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
+        return getInvestAssetBySymbol(searchResponseDto.getSymbol()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
     }
 
     @Transactional(readOnly = true)
-    public Optional<InvestAssetEntity> findInvestAssetBySymbol(String symbol) {
+    public Optional<InvestAssetEntity> getInvestAssetBySymbol(String symbol) {
         return investAssetRepository.findBySymbol(symbol);
     }
 
     @Transactional(readOnly = true)
-    public Optional<InvestAssetEntity> findInvestAssetById(long id) {
+    public Optional<InvestAssetEntity> getInvestAssetById(long id) {
         return investAssetRepository.findById(id);
     }
 
@@ -52,7 +51,7 @@ public class InvestAssetService {
 
     @Transactional
     public void deleteInvestAssetBySymbol(String symbol) {
-        InvestAssetEntity investAssetEntity = findInvestAssetBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException(symbol));
+        InvestAssetEntity investAssetEntity = getInvestAssetBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException(symbol));
         investAssetRepository.delete(investAssetEntity);
     }
 }
