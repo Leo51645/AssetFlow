@@ -48,14 +48,11 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
                 } else {
                     throw new YahooAssetNameNotFoundException(requestParam);
                 }
-            }
-            if (response.statusCode() == 429) {
+            } else if (response.statusCode() == 429) {
                 throw new YahooRateLimitException();
-            }
-            if (response.statusCode() >= 500) {
+            } else if (response.statusCode() >= 500) {
                 throw new YahooServiceException(response.statusCode());
-            }
-            if (response.statusCode() != 200) {
+            } else if (response.statusCode() != 200) {
                 throw new YahooApiException(response.statusCode());
             }
 
