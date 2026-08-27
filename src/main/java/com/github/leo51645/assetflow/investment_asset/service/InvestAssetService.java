@@ -43,7 +43,7 @@ public class InvestAssetService {
 
     @Transactional
     public void deleteInvestAssetBySymbol(String symbol) {
-        InvestAssetEntity investAssetEntity = findInvestAssetBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException("Asset with Symbol " + symbol + " not found"));
+        InvestAssetEntity investAssetEntity = findInvestAssetBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException(symbol));
         investAssetRepository.delete(investAssetEntity);
     }
 }
