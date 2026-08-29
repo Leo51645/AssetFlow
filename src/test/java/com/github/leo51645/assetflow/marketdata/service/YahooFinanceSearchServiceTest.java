@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.investment_asset.domain.entity.AssetType;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
-import com.github.leo51645.assetflow.marketdata.exception.yahooSearchException.YahooSearchInvalidParameterException;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

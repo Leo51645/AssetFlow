@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
-import com.github.leo51645.assetflow.marketdata.exception.yahooSearchException.YahooSearchInvalidParameterException;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

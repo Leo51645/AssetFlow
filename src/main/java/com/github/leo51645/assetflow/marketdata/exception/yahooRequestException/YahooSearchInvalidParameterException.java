@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.marketdata.exception.yahooSearchException;
+package com.github.leo51645.assetflow.marketdata.exception.yahooRequestException;
 
 public class YahooSearchInvalidParameterException extends RuntimeException {
     public YahooSearchInvalidParameterException(String requestParam) {
