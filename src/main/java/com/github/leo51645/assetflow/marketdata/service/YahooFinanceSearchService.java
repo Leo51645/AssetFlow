@@ -101,14 +101,14 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
 
             JsonNode singleAsset = assetsNode.get(0);
 
-            parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(singleAsset));
+            parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(singleAsset, requestParam));
         } else {
             if (assetsNode.isEmpty()) {
                 throw new YahooAssetNameNotFoundException(requestParam);
             }
 
             for (JsonNode asset : assetsNode) {
-                parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(asset));
+                parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(asset, requestParam));
             }
         }
 

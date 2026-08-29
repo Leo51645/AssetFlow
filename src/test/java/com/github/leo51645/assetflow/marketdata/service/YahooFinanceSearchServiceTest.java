@@ -682,7 +682,7 @@ class YahooFinanceSearchServiceTest {
             List<MarketDataYahooSearchResponseDto> expectedAssets = List.of(expectedDto);
 
             when(marketDataUtil.isIsin(EXAMPLE_ISIN)).thenReturn(true);
-            when(marketDataUtil.getMarketDataFromJsonNode(any(JsonNode.class))).thenReturn(expectedDto);
+            when(marketDataUtil.getMarketDataFromJsonNode(any(JsonNode.class), anyString())).thenReturn(expectedDto);
 
             List<MarketDataYahooSearchResponseDto> actual = yahooFinanceSearchService.parseResponse(rawResponseByIsin(), EXAMPLE_ISIN);
 
@@ -696,7 +696,7 @@ class YahooFinanceSearchServiceTest {
             MarketDataYahooSearchResponseDto expectedFirstDto = new MarketDataYahooSearchResponseDto("Apple Inc.", "APPL", AssetType.STOCK);
 
             when(marketDataUtil.isIsin(EXAMPLE_NAME)).thenReturn(false);
-            when(marketDataUtil.getMarketDataFromJsonNode(any(JsonNode.class))).thenReturn(expectedFirstDto);
+            when(marketDataUtil.getMarketDataFromJsonNode(any(JsonNode.class), anyString())).thenReturn(expectedFirstDto);
 
             List<MarketDataYahooSearchResponseDto> actual = yahooFinanceSearchService.parseResponse(rawResponseByName(), EXAMPLE_NAME);
 
