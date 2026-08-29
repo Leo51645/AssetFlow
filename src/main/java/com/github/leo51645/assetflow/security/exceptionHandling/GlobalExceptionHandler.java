@@ -237,6 +237,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
     }
 
+    @ExceptionHandler(YahooInvalidResponseException.class)
+    public ResponseEntity<ErrorResponse> handleYahooInvalidResponse(
+            YahooInvalidResponseException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo invalid response: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
+    }
+
     @ExceptionHandler(YahooMarketDataUnavailableException.class)
     public ResponseEntity<ErrorResponse> handleYahooMarketDataUnavailable(
             YahooMarketDataUnavailableException e, HttpServletRequest request) {

@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.marketdata.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
@@ -66,12 +67,19 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
     }
 
     @Override
-    public List<MarketDataYahooSearchResponseDto> parseResponse(String rawResponse, String requestParam) throws JsonProcessingException {
+    public List<MarketDataYahooSearchResponseDto> parseResponse(String rawResponse, String requestParam) {
         List<MarketDataYahooSearchResponseDto> parsedAssets = new ArrayList<>();
 
-        JsonNode root = objectMapper.readTree(rawResponse);
+        JsonNode root;
+        JsonNode assetsNode;
 
-        JsonNode assetsNode = root.get("quotes");
+        try {
+            root = objectMapper.readTree(rawResponse);
+            assetsNode = root.get("quotes");
+        } catch (JsonProcessingException | NullPointerException | IllegalArgumentException e) {
+            throw new YahooInvalidResponseException(requestParam);
+        }
+
 
         if (marketDataUtil.isIsin(requestParam)) {
             if (assetsNode.isEmpty()) {
