@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YahooFinanceSearchService implements MarketDataService <String, MarketDataYahooSearchResponseDto> {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final MarketDataUtil marketDataUtil;
 
     @Override
     public HttpResponse<String> getHttpResponse(String requestParam) {
+        if (requestParam == null || requestParam.isBlank()) {
+            throw new YahooSearchInvalidParameterException(requestParam);
+        }
+
         URI uri = URI.create(marketDataUtil.createYahooFinanceSearchRequestURI(requestParam));
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -48,14 +53,11 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
                 } else {
                     throw new YahooAssetNameNotFoundException(requestParam);
                 }
-            }
-            if (response.statusCode() == 429) {
+            } else if (response.statusCode() == 429) {
                 throw new YahooRateLimitException();
-            }
-            if (response.statusCode() >= 500) {
+            } else if (response.statusCode() >= 500) {
                 throw new YahooServiceException(response.statusCode());
-            }
-            if (response.statusCode() != 200) {
+            } else if (response.statusCode() != 200) {
                 throw new YahooApiException(response.statusCode());
             }
 
@@ -69,12 +71,28 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
     }
 
     @Override
-    public List<MarketDataYahooSearchResponseDto> parseResponse(String rawResponse, String requestParam) throws JsonProcessingException {
+    public List<MarketDataYahooSearchResponseDto> parseResponse(String rawResponse, String requestParam) {
         List<MarketDataYahooSearchResponseDto> parsedAssets = new ArrayList<>();
 
-        JsonNode root = objectMapper.readTree(rawResponse);
+        JsonNode root;
+        JsonNode assetsNode;
 
-        JsonNode assetsNode = root.get("quotes");
+        if (requestParam == null || requestParam.isBlank()) {
+            throw new YahooSearchInvalidParameterException(requestParam);
+        }
+
+        try {
+            root = objectMapper.readTree(rawResponse);
+
+            if (rawResponse.isEmpty() | rawResponse.isBlank()) {
+                throw new YahooInvalidResponseException(requestParam);
+            }
+
+            assetsNode = root.get("quotes");
+        } catch (JsonProcessingException | IllegalArgumentException e) {
+            throw new YahooInvalidResponseException(requestParam);
+        }
+
 
         if (marketDataUtil.isIsin(requestParam)) {
             if (assetsNode.isEmpty()) {
@@ -83,14 +101,14 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
 
             JsonNode singleAsset = assetsNode.get(0);
 
-            parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(singleAsset));
+            parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(singleAsset, requestParam));
         } else {
             if (assetsNode.isEmpty()) {
                 throw new YahooAssetNameNotFoundException(requestParam);
             }
 
             for (JsonNode asset : assetsNode) {
-                parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(asset));
+                parsedAssets.add(marketDataUtil.getMarketDataFromJsonNode(asset, requestParam));
             }
         }
 

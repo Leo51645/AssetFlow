@@ -4,12 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.leo51645.assetflow.investment_asset.domain.entity.AssetType;
 import com.github.leo51645.assetflow.investment_asset.domain.entity.Currency;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.YahooMarketDataUnavailableException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MarketDataUtil {
 
     public AssetType getAssetType(String quoteType) {
+        if (quoteType == null || quoteType.isBlank()) {
+            return AssetType.OTHER;
+        }
+
         AssetType assetType = AssetType.OTHER;
         switch (quoteType) {
             case "ETF" -> assetType = AssetType.ETF;
@@ -24,7 +29,7 @@ public class MarketDataUtil {
     public Currency getCurrency(String currencyString) {
         Currency currency = Currency.USD;
 
-        if (currencyString == null || currencyString.isEmpty()) {
+        if (currencyString == null || currencyString.isBlank()) {
             return currency;
         }
 
@@ -51,16 +56,26 @@ public class MarketDataUtil {
         return requestParam.matches("^[A-Z]{2}[A-Z0-9]{9}[0-9]$");
     }
 
-    public MarketDataYahooSearchResponseDto getMarketDataFromJsonNode(JsonNode asset) {
+    public MarketDataYahooSearchResponseDto getMarketDataFromJsonNode(JsonNode asset, String requestParam) {
         MarketDataYahooSearchResponseDto parsedAsset = new MarketDataYahooSearchResponseDto();
 
-        String name = asset.get("longname").asText();
+         JsonNode nameNode = asset.path("longname");
+         JsonNode symbolNode = asset.path("symbol");
+         JsonNode assetTypeNode = asset.path("quoteType");
+
+        if (nameNode.isMissingNode() || nameNode.isNull()
+                || symbolNode.isMissingNode() || symbolNode.isNull()
+                || assetTypeNode.isMissingNode() || assetTypeNode.isNull()) {
+            throw new YahooMarketDataUnavailableException(requestParam);
+        }
+
+        String name = nameNode.asText();
         parsedAsset.setName(name);
 
-        String symbol = asset.get("symbol").asText();
+        String symbol = symbolNode.asText();
         parsedAsset.setSymbol(symbol);
 
-        String stringAssetType = asset.get("quoteType").asText();
+        String stringAssetType = assetTypeNode.asText();
         parsedAsset.setAssetType(getAssetType(stringAssetType));
 
         return parsedAsset;

@@ -8,7 +8,7 @@ import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepo
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataDtoMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.YahooSymbolMismatchException;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.YahooSymbolMismatchException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
