@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.marketdata.exception;
+package com.github.leo51645.assetflow.marketdata.exception.yahooApiException;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
