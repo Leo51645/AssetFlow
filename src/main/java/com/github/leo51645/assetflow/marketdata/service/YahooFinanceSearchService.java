@@ -1,11 +1,11 @@
 package com.github.leo51645.assetflow.marketdata.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooSearchResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooSearchException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +29,10 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
 
     @Override
     public HttpResponse<String> getHttpResponse(String requestParam) {
+        if (requestParam == null || requestParam.isBlank()) {
+            throw new YahooSearchInvalidParameterException(requestParam);
+        }
+
         URI uri = URI.create(marketDataUtil.createYahooFinanceSearchRequestURI(requestParam));
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -73,10 +77,19 @@ public class YahooFinanceSearchService implements MarketDataService <String, Mar
         JsonNode root;
         JsonNode assetsNode;
 
+        if (requestParam == null || requestParam.isBlank()) {
+            throw new YahooSearchInvalidParameterException(requestParam);
+        }
+
         try {
             root = objectMapper.readTree(rawResponse);
+
+            if (rawResponse.isEmpty() | rawResponse.isBlank()) {
+                throw new YahooInvalidResponseException(requestParam);
+            }
+
             assetsNode = root.get("quotes");
-        } catch (JsonProcessingException | NullPointerException | IllegalArgumentException e) {
+        } catch (JsonProcessingException | IllegalArgumentException e) {
             throw new YahooInvalidResponseException(requestParam);
         }
 

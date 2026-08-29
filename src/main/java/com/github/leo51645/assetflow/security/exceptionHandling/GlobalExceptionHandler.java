@@ -1,7 +1,8 @@
 package com.github.leo51645.assetflow.security.exceptionHandling;
 
 import com.github.leo51645.assetflow.investment_asset.exception.InvestAssetNotFoundException;
-import com.github.leo51645.assetflow.marketdata.exception.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooSearchException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
@@ -172,6 +173,15 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Asset not found: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooSearchInvalidParameterException.class)
+    public ResponseEntity<ErrorResponse> handleYahooSearchInvalidParameter(
+            YahooSearchInvalidParameterException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Invalid parameter: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(YahooAssetNameNotFoundException.class)

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.investment_asset.domain.entity.Currency;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
-import com.github.leo51645.assetflow.marketdata.exception.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
