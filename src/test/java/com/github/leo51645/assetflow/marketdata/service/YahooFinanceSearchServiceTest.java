@@ -600,7 +600,7 @@ class YahooFinanceSearchServiceTest {
         }
 
         @Test
-        void shouldThrowYahooSymbolNotFoundExceptionDueTo404WithSymbolParam() throws IOException, InterruptedException {
+        void shouldThrowYahooAssetNameNotFoundExceptionDueTo404WithNameParam() throws IOException, InterruptedException {
             HttpResponse<String> expected = createFakeResponse(404);
             when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(expected);
             when(marketDataUtil.createYahooFinanceSearchRequestURI(anyString())).thenReturn("https://example.com");
@@ -632,7 +632,7 @@ class YahooFinanceSearchServiceTest {
         }
 
         @Test
-        void shouldThrowYahooApiExceptionDueToErrorCodeNot200() throws IOException, InterruptedException {
+        void shouldThrowYahooApiExceptionDueToStatusCodeNot200() throws IOException, InterruptedException {
             HttpResponse<String> expected = createFakeResponse(403);
             when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(expected);
             when(marketDataUtil.createYahooFinanceSearchRequestURI(anyString())).thenReturn("https://example.com");

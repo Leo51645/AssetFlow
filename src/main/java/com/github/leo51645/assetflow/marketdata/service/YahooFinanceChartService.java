@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class YahooFinanceChartService implements MarketDataService <String, MarketDataYahooChartResponseDto> {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient;
 
     private final MarketDataUtil marketDataUtil;
     private final ObjectMapper objectMapper;
@@ -74,7 +74,7 @@ public class YahooFinanceChartService implements MarketDataService <String, Mark
     }
 
     @Override
-    public List<MarketDataYahooChartResponseDto> parseResponse(String rawResponse, String symbolRequest) throws JsonProcessingException {
+    public List<MarketDataYahooChartResponseDto> parseResponse(String rawResponse, String symbolRequest) {
         if (symbolRequest == null || symbolRequest.isBlank()) {
             throw new YahooChartInvalidSymbolParameterException(symbolRequest);
         }
