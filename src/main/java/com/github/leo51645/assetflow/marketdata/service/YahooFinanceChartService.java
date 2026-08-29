@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.leo51645.assetflow.investment_asset.domain.entity.Currency;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooChartInvalidSymbolParameterException;
 import com.github.leo51645.assetflow.marketdata.util.MarketDataUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class YahooFinanceChartService implements MarketDataService <String, Mark
 
     @Override
     public HttpResponse<String> getHttpResponse(String symbol) {
+        if (symbol == null || symbol.isBlank()) {
+            throw new YahooChartInvalidSymbolParameterException(symbol);
+        }
+
         URI uri = URI.create(marketDataUtil.createYahooFinanceChartRequestURI(symbol));
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -70,6 +75,10 @@ public class YahooFinanceChartService implements MarketDataService <String, Mark
 
     @Override
     public List<MarketDataYahooChartResponseDto> parseResponse(String rawResponse, String symbolRequest) throws JsonProcessingException {
+        if (symbolRequest == null || symbolRequest.isBlank()) {
+            throw new YahooChartInvalidSymbolParameterException(symbolRequest);
+        }
+
         List<MarketDataYahooChartResponseDto> parsedAssets = new ArrayList<>();
 
         JsonNode root = objectMapper.readTree(rawResponse);

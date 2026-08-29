@@ -2,7 +2,8 @@ package com.github.leo51645.assetflow.security.exceptionHandling;
 
 import com.github.leo51645.assetflow.investment_asset.exception.InvestAssetNotFoundException;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
-import com.github.leo51645.assetflow.marketdata.exception.yahooSearchException.YahooSearchInvalidParameterException;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooChartInvalidSymbolParameterException;
+import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
@@ -252,6 +253,15 @@ public class GlobalExceptionHandler {
             YahooInvalidResponseException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Yahoo invalid response: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(YahooChartInvalidSymbolParameterException.class)
+    public ResponseEntity<ErrorResponse> handleYahooChartInvalidSymbolParameter(
+            YahooChartInvalidSymbolParameterException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Yahoo chart request invalid symbol: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.BAD_GATEWAY, e.getMessage(), request, errorId);
     }
