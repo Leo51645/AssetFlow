@@ -81,9 +81,20 @@ public class YahooFinanceChartService implements MarketDataService <String, Mark
 
         List<MarketDataYahooChartResponseDto> parsedAssets = new ArrayList<>();
 
-        JsonNode root = objectMapper.readTree(rawResponse);
+        JsonNode root;
+        JsonNode metadata;
 
-        JsonNode metadata = root.path("chart").path("result").get(0).path("meta");
+        try {
+            root = objectMapper.readTree(rawResponse);
+
+            if (rawResponse.isEmpty() | rawResponse.isBlank()) {
+                throw new YahooInvalidResponseException(symbolRequest);
+            }
+
+            metadata = root.path("chart").path("result").get(0).path("meta");
+        } catch (JsonProcessingException | IllegalArgumentException e) {
+            throw new YahooInvalidResponseException(symbolRequest);
+        }
 
         JsonNode symbolResponseNode = metadata.path("symbol");
         JsonNode currentPriceNode = metadata.path("regularMarketPrice");
