@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 public class MarketDataUtil {
 
     public AssetType getAssetType(String quoteType) {
+        if (quoteType == null || quoteType.isBlank()) {
+            return AssetType.OTHER;
+        }
+
         AssetType assetType = AssetType.OTHER;
         switch (quoteType) {
             case "ETF" -> assetType = AssetType.ETF;
@@ -25,7 +29,7 @@ public class MarketDataUtil {
     public Currency getCurrency(String currencyString) {
         Currency currency = Currency.USD;
 
-        if (currencyString == null || currencyString.isEmpty()) {
+        if (currencyString == null || currencyString.isBlank()) {
             return currency;
         }
 
