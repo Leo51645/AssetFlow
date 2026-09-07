@@ -31,9 +31,11 @@ public class InvestAssetEntity {
     @Column(nullable = false)
     private AssetType assetType;
 
+    @Setter
     @Column(nullable = false)
     private BigDecimal currentPrice;
 
+    @Setter
     @Column(nullable = false)
     private LocalDateTime priceUpdatedAt;
 
