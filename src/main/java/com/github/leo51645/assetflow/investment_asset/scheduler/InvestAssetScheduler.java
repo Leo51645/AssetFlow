@@ -1,7 +1,7 @@
 package com.github.leo51645.assetflow.investment_asset.scheduler;
 
 import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetEntity;
-import com.github.leo51645.assetflow.investment_asset.repository.InvestAssetRepository;
+import com.github.leo51645.assetflow.investment_asset.service.InvestAssetService;
 import com.github.leo51645.assetflow.marketdata.domain.dto.MarketDataYahooChartResponseDto;
 import com.github.leo51645.assetflow.marketdata.service.YahooFinanceChartService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InvestAssetScheduler {
 
-    private final InvestAssetRepository investAssetRepository;
+    private final InvestAssetService investAssetService;
     private final YahooFinanceChartService yahooFinanceChartService;
 
     @Scheduled(fixedRate = 60_000)
     public void updateMarketData() {
         LocalDateTime maxUpdatedBefore = LocalDateTime.now().minusMinutes(10);
 
-        List<InvestAssetEntity> outdatedAssets = investAssetRepository.findOutdatedAssets(maxUpdatedBefore);
+        List<InvestAssetEntity> outdatedAssets = investAssetService.getAllOutdatedInvestAssets(maxUpdatedBefore);
 
         if (outdatedAssets.isEmpty()) {
             return;
@@ -37,7 +37,7 @@ public class InvestAssetScheduler {
 
             investAsset.setCurrentPrice(responseDtoList.getFirst().getCurrentPrice());
             investAsset.setPriceUpdatedAt(responseDtoList.getFirst().getPriceUpdatedAt());
-            investAssetRepository.save(investAsset);
+            investAssetService.updateInvestAsset(investAsset);
         }
     }
 }
