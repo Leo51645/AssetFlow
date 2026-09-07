@@ -45,6 +45,11 @@ public class InvestAssetService {
     }
 
     @Transactional
+    public InvestAssetEntity updateInvestAsset(InvestAssetEntity investAsset) {
+        return investAssetRepository.save(investAsset);
+    }
+
+    @Transactional
     public void deleteInvestAsset(InvestAssetEntity investAssetEntity) {
         investAssetRepository.delete(investAssetEntity);
     }
