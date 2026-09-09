@@ -1,4 +1,4 @@
-package com.github.leo51645.assetflow.trade_transaction.domain.dto.response;
+package com.github.leo51645.assetflow.order.domain.dto.response;
 
 import com.github.leo51645.assetflow.investment_asset.domain.entity.AssetType;
 import lombok.AllArgsConstructor;
