@@ -52,8 +52,10 @@ public class InvestAssetService {
     }
 
     @Transactional
-    public InvestAssetEntity updateInvestAsset(InvestAssetEntity investAsset) {
-        return investAssetRepository.save(investAsset);
+    public void updateInvestAsset(InvestAssetEntity investAsset) {
+        if (investAssetRepository.existsById(investAsset.getId())) {
+            investAssetRepository.save(investAsset);
+        }
     }
 
     @Transactional

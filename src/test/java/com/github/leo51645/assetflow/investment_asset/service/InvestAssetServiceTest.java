@@ -150,6 +150,29 @@ class InvestAssetServiceTest {
     }
 
     @Nested
+    class UpdateInvestAsset {
+        @Test
+        void shouldUpdateInvestAsset() {
+            InvestAssetEntity investAssetEntity = InvestAssetEntity.builder().id(99L).build();
+            when(investAssetRepository.existsById(anyLong())).thenReturn(true);
+
+            investAssetService.updateInvestAsset(investAssetEntity);
+
+            verify(investAssetRepository).save(any(InvestAssetEntity.class));
+        }
+
+        @Test
+        void shouldNotUpdateInvestAssetWhenAssetNotExists() {
+            InvestAssetEntity investAssetEntity = InvestAssetEntity.builder().id(99L).build();
+            when(investAssetRepository.existsById(anyLong())).thenReturn(false);
+
+            investAssetService.updateInvestAsset(investAssetEntity);
+
+            verify(investAssetRepository, never()).save(any(InvestAssetEntity.class));
+        }
+    }
+
+    @Nested
     class DeleteInvestAsset {
         @Test
         void shouldDeleteInvestAsset() {
@@ -179,8 +202,4 @@ class InvestAssetServiceTest {
             verify(investAssetRepository, never()).delete(any(InvestAssetEntity.class));
         }
     }
-
-
-
-
 }
