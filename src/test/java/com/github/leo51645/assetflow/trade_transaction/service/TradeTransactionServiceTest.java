@@ -1,17 +1,23 @@
 package com.github.leo51645.assetflow.trade_transaction.service;
 
+import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetEntity;
+import com.github.leo51645.assetflow.trade_transaction.domain.dto.request.OrderRequestDto;
 import com.github.leo51645.assetflow.trade_transaction.domain.entity.TradeTransactionEntity;
+import com.github.leo51645.assetflow.trade_transaction.domain.entity.TransactionType;
 import com.github.leo51645.assetflow.trade_transaction.repository.TradeTransactionRepository;
+import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -29,13 +35,28 @@ class TradeTransactionServiceTest {
 
     @Test
     void shouldSaveTradeTransaction() {
-        TradeTransactionEntity expected = new TradeTransactionEntity();
-        when(tradeTransactionRepository.save(any(TradeTransactionEntity.class))).thenReturn(expected);
+        InvestAssetEntity investAssetEntity = InvestAssetEntity.builder().currentPrice(BigDecimal.valueOf(6)).build();
+        UserEntity userEntity = new UserEntity();
+        OrderRequestDto orderRequestDto = new OrderRequestDto("someAsset", 5L);
+        TransactionType transactionType = TransactionType.BUY;
 
-        TradeTransactionEntity actual = tradeTransactionService.saveTradeTransaction(expected);
+        when(tradeTransactionRepository.save(any(TradeTransactionEntity.class))).thenAnswer(i -> i.getArgument(0));
 
-        assertEquals(expected, actual);
-        verify(tradeTransactionRepository).save(expected);
+        TradeTransactionEntity actual = tradeTransactionService.createTradeTransaction(
+                investAssetEntity,
+                userEntity,
+                orderRequestDto,
+                transactionType,
+                null);
+
+        assertThat(actual.getTotalAmount()).isEqualByComparingTo(BigDecimal.valueOf(30));
+        assertEquals(BigDecimal.valueOf(6), actual.getExecutionPrice());
+        assertEquals(5L, actual.getQuantity());
+        assertEquals(transactionType, actual.getTransactionType());
+        assertNull(actual.getRealizedProfit());
+        assertEquals(userEntity, actual.getUser());
+        assertEquals(investAssetEntity, actual.getInvestAsset());
+        verify(tradeTransactionRepository).save(any(TradeTransactionEntity.class));
     }
 
     @Test
