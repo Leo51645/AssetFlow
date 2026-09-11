@@ -30,7 +30,7 @@ public class HoldingsEntity {
 
     @Setter
     @Column(nullable = false)
-    private BigDecimal quantity;
+    private Long quantity;
 
     @Setter
     @Column(nullable = false)
