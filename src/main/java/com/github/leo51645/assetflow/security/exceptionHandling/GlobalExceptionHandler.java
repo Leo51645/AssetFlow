@@ -1,5 +1,6 @@
 package com.github.leo51645.assetflow.security.exceptionHandling;
 
+import com.github.leo51645.assetflow.holdings.exception.HoldingNotFoundException;
 import com.github.leo51645.assetflow.investment_asset.exception.InvestAssetNotFoundException;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
 import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooChartInvalidSymbolParameterException;
@@ -298,6 +299,15 @@ public class GlobalExceptionHandler {
             TradeTransactionNotFoundException e, HttpServletRequest request) {
         String errorId = UUID.randomUUID().toString();
         log.warn("ErrorId: {} | Trade transaction not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(HoldingNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleHoldingNotFound(
+            HoldingNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Holding not found: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
     }
