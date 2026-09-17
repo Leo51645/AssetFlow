@@ -33,17 +33,21 @@ public class InvestAssetService {
 
         InvestAssetEntity investAssetEntity = marketDataDtoMapper.toInvestAssetEntity(searchResponseDto, chartResponseDto);
 
-        return getInvestAssetBySymbol(searchResponseDto.getSymbol()).orElseGet(() -> investAssetRepository.save(investAssetEntity));
+        try {
+            return getInvestAssetBySymbol(investAssetEntity.getSymbol());
+        } catch (InvestAssetNotFoundException e) {
+            return investAssetRepository.save(investAssetEntity);
+        }
     }
 
     @Transactional(readOnly = true)
-    public Optional<InvestAssetEntity> getInvestAssetBySymbol(String symbol) {
-        return investAssetRepository.findBySymbol(symbol);
+    public InvestAssetEntity getInvestAssetBySymbol(String symbol) {
+        return investAssetRepository.findBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException(symbol));
     }
 
     @Transactional(readOnly = true)
-    public Optional<InvestAssetEntity> getInvestAssetById(long id) {
-        return investAssetRepository.findById(id);
+    public InvestAssetEntity getInvestAssetById(long id) {
+        return investAssetRepository.findById(id).orElseThrow(() -> new InvestAssetNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +69,7 @@ public class InvestAssetService {
 
     @Transactional
     public void deleteInvestAssetBySymbol(String symbol) {
-        InvestAssetEntity investAssetEntity = getInvestAssetBySymbol(symbol).orElseThrow(() -> new InvestAssetNotFoundException(symbol));
+        InvestAssetEntity investAssetEntity = getInvestAssetBySymbol(symbol);
         investAssetRepository.delete(investAssetEntity);
     }
 }
