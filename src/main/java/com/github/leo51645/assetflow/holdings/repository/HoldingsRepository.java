@@ -12,5 +12,9 @@ public interface HoldingsRepository extends JpaRepository<HoldingsEntity, Holdin
     List<HoldingsEntity> findAllByHoldingIdUserId(Long userId);
     List<HoldingsEntity> findAllByHoldingIdAssetId(Long assetId);
 
+    boolean existsByHoldingIdUserId(Long userId);
+    boolean existsByHoldingIdAssetId(Long assetId);
+    boolean existsByHoldingId(HoldingId holdingId);
+
     void deleteAllByHoldingIdUserId(Long userId);
 }
