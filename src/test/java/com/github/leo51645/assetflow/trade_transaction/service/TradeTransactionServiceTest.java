@@ -4,6 +4,7 @@ import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetE
 import com.github.leo51645.assetflow.trade_transaction.domain.dto.request.OrderRequestDto;
 import com.github.leo51645.assetflow.trade_transaction.domain.entity.TradeTransactionEntity;
 import com.github.leo51645.assetflow.trade_transaction.domain.entity.TransactionType;
+import com.github.leo51645.assetflow.trade_transaction.exception.TradeTransactionNotFoundException;
 import com.github.leo51645.assetflow.trade_transaction.repository.TradeTransactionRepository;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -64,18 +65,15 @@ class TradeTransactionServiceTest {
         TradeTransactionEntity expected = new TradeTransactionEntity();
         when(tradeTransactionRepository.findById(anyLong())).thenReturn(Optional.of(expected));
 
-        Optional<TradeTransactionEntity> actual = tradeTransactionService.getTradeTransactionById(99L);
-        assertTrue(actual.isPresent());
-        assertEquals(expected, actual.get());
+        TradeTransactionEntity actual = tradeTransactionService.getTradeTransactionById(99L);
+        assertNotNull(actual);
+        assertEquals(expected, actual);
     }
 
     @Test
     void shouldGetEmptyTradeTransactionById() {
-        Optional<TradeTransactionEntity> expected = Optional.empty();
-
-        when(tradeTransactionRepository.findById(anyLong())).thenReturn(expected);
-        Optional<TradeTransactionEntity> actual = tradeTransactionService.getTradeTransactionById(99L);
-        assertTrue(actual.isEmpty());
+        when(tradeTransactionRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(TradeTransactionNotFoundException.class, () -> tradeTransactionService.getTradeTransactionsByInvestAssetId(99L));
     }
 
     @Test
@@ -103,10 +101,10 @@ class TradeTransactionServiceTest {
     }
 
     @Test
-    void shouldDeleteTradeTransactionByTradeTransactionId() {
-        tradeTransactionService.deleteTradeTransactionByTradeTransactionId(99L);
-
-        verify(tradeTransactionRepository).deleteById(99L);
+    void shouldDeleteTradeTransaction() {
+        TradeTransactionEntity tradeTransactionEntity = new TradeTransactionEntity();
+        tradeTransactionService.deleteTradeTransaction(tradeTransactionEntity);
+        verify(tradeTransactionRepository).delete(tradeTransactionEntity);
     }
 
     @Test

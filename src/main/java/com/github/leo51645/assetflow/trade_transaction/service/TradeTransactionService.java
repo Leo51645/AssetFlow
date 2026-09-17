@@ -4,15 +4,16 @@ import com.github.leo51645.assetflow.investment_asset.domain.entity.InvestAssetE
 import com.github.leo51645.assetflow.trade_transaction.domain.dto.request.OrderRequestDto;
 import com.github.leo51645.assetflow.trade_transaction.domain.entity.TradeTransactionEntity;
 import com.github.leo51645.assetflow.trade_transaction.domain.entity.TransactionType;
+import com.github.leo51645.assetflow.trade_transaction.exception.TradeTransactionNotFoundException;
 import com.github.leo51645.assetflow.trade_transaction.repository.TradeTransactionRepository;
 import com.github.leo51645.assetflow.user.domain.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class TradeTransactionService {
 
     private final TradeTransactionRepository tradeTransactionRepository;
 
+    @Transactional
     public TradeTransactionEntity createTradeTransaction(InvestAssetEntity investAssetEntity, UserEntity userEntity,
                                                          OrderRequestDto orderRequestDto, TransactionType transactionType, BigDecimal realizedProfit) {
         TradeTransactionEntity tradeTransactionEntity = TradeTransactionEntity.builder()
@@ -36,26 +38,33 @@ public class TradeTransactionService {
         return tradeTransactionRepository.save(tradeTransactionEntity);
     }
 
-    public Optional<TradeTransactionEntity> getTradeTransactionById(Long tradeTransactionId) {
-        return tradeTransactionRepository.findById(tradeTransactionId);
+    @Transactional(readOnly = true)
+    public TradeTransactionEntity getTradeTransactionById(Long tradeTransactionId) {
+        return tradeTransactionRepository.findById(tradeTransactionId)
+                .orElseThrow(() -> new TradeTransactionNotFoundException("TradeTransaction not found with transactionId: " + tradeTransactionId));
     }
 
+    @Transactional(readOnly = true)
     public List<TradeTransactionEntity> getAllTradeTransactionsByUserId(Long userId) {
         return tradeTransactionRepository.findAllByUser_Id(userId);
     }
 
+    @Transactional(readOnly = true)
     public List<TradeTransactionEntity> getTradeTransactionsByInvestAssetId(Long investAssetId) {
         return tradeTransactionRepository.findAllByInvestAsset_Id(investAssetId);
     }
 
-    public void deleteTradeTransactionByTradeTransactionId(Long tradeTransactionId) {
-        tradeTransactionRepository.deleteById(tradeTransactionId);
+    @Transactional
+    public void deleteTradeTransaction(TradeTransactionEntity tradeTransactionEntity) {
+        tradeTransactionRepository.delete(tradeTransactionEntity);
     }
 
+    @Transactional
     public void deleteAllTradeTransactionsByUserId(Long userId) {
         tradeTransactionRepository.deleteAllByUser_Id(userId);
     }
 
+    @Transactional
     public void deleteAllTradeTransactionsByInvestAssetId(Long investAssetId) {
         tradeTransactionRepository.deleteAllByInvestAsset_Id(investAssetId);
     }

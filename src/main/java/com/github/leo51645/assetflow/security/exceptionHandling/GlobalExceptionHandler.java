@@ -6,6 +6,7 @@ import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.
 import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooSearchInvalidParameterException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.InvalidRefreshTokenException;
 import com.github.leo51645.assetflow.security.exceptionHandling.exception.MissingRefreshTokenException;
+import com.github.leo51645.assetflow.trade_transaction.exception.TradeTransactionNotFoundException;
 import com.github.leo51645.assetflow.user.exception.EmailAlreadyExistsException;
 import com.github.leo51645.assetflow.user.exception.InvalidPasswordException;
 import com.github.leo51645.assetflow.user.exception.UserNotFoundException;
@@ -282,6 +283,23 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Yahoo api exception: {}", errorId, e.getMessage());
 
         return buildResponse(e.getStatus(), e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(InvestAssetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInvestAssetNotFound(InvestAssetNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Invest asset not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(TradeTransactionNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTradeTransactionNotFound(
+            TradeTransactionNotFoundException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Trade transaction not found: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(Exception.class)

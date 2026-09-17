@@ -11,6 +11,8 @@ public interface TradeTransactionRepository extends JpaRepository<TradeTransacti
     List<TradeTransactionEntity> findAllByUser_Id(Long userId);
     List<TradeTransactionEntity> findAllByInvestAsset_Id(Long investAssetId);
 
+    boolean existsById(long id);
+
     void deleteAllByUser_Id(Long userId);
     void deleteAllByInvestAsset_Id(Long investAssetId);
 }
