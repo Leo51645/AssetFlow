@@ -4,4 +4,8 @@ public class InvestAssetNotFoundException extends RuntimeException {
     public InvestAssetNotFoundException(String symbol) {
         super("Asset not found with symbol: " + symbol);
     }
+
+    public InvestAssetNotFoundException(long id) {
+        super("Asset not found with invest asset id: " + id);
+    }
 }

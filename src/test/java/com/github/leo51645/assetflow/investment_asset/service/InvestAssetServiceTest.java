@@ -108,20 +108,17 @@ class InvestAssetServiceTest {
 
             when(investAssetRepository.findBySymbol(anyString())).thenReturn(Optional.of(expected));
 
-            Optional<InvestAssetEntity> actual = investAssetService.getInvestAssetBySymbol(searchResponseDto.getSymbol());
+            InvestAssetEntity actual = investAssetService.getInvestAssetBySymbol(searchResponseDto.getSymbol());
 
-            assertTrue(actual.isPresent());
-            assertEquals(expected, actual.get());
+            assertNotNull(actual);
+            assertEquals(expected, actual);
             verify(investAssetRepository).findBySymbol(searchResponseDto.getSymbol());
         }
 
         @Test
-        void shouldReturnOptionalEmptyDueToSymbolNotFound() {
+        void shouldThrowInvestAssetNotFoundExceptionDueToSymbolNotFound() {
             when(investAssetRepository.findBySymbol(anyString())).thenReturn(Optional.empty());
-
-            Optional<InvestAssetEntity> actual = investAssetService.getInvestAssetBySymbol(chartResponseDto.getSymbol());
-
-            assertTrue(actual.isEmpty());
+            assertThrows(InvestAssetNotFoundException.class, () -> investAssetService.getInvestAssetBySymbol(chartResponseDto.getSymbol()));
             verify(investAssetRepository).findBySymbol(chartResponseDto.getSymbol());
         }
 
@@ -131,20 +128,17 @@ class InvestAssetServiceTest {
 
             when(investAssetRepository.findById(anyLong())).thenReturn(Optional.of(expected));
 
-            Optional<InvestAssetEntity> actual = investAssetService.getInvestAssetById(99L);
+            InvestAssetEntity actual = investAssetService.getInvestAssetById(99L);
 
-            assertTrue(actual.isPresent());
-            assertEquals(expected, actual.get());
+            assertNotNull(actual);
+            assertEquals(expected, actual);
             verify(investAssetRepository).findById(99L);
         }
 
         @Test
-        void shouldReturnOptionalEmptyDueToIdNotFound() {
+        void shouldThrowInvestAssetNotFoundExceptionDueToIdNotFound() {
             when(investAssetRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-            Optional<InvestAssetEntity> actual = investAssetService.getInvestAssetById(99L);
-
-            assertTrue(actual.isEmpty());
+            assertThrows(InvestAssetNotFoundException.class, () -> investAssetService.getInvestAssetById(99L));
             verify(investAssetRepository).findById(99L);
         }
     }
