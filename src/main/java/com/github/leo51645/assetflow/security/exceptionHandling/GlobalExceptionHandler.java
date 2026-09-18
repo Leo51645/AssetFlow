@@ -1,6 +1,7 @@
 package com.github.leo51645.assetflow.security.exceptionHandling;
 
 import com.github.leo51645.assetflow.holdings.exception.HoldingNotFoundException;
+import com.github.leo51645.assetflow.holdings.exception.InsufficientQuantityException;
 import com.github.leo51645.assetflow.investment_asset.exception.InvestAssetNotFoundException;
 import com.github.leo51645.assetflow.marketdata.exception.yahooApiException.*;
 import com.github.leo51645.assetflow.marketdata.exception.yahooRequestException.YahooChartInvalidSymbolParameterException;
@@ -310,6 +311,15 @@ public class GlobalExceptionHandler {
         log.warn("ErrorId: {} | Holding not found: {}", errorId, e.getMessage());
 
         return buildResponse(HttpStatus.NOT_FOUND, e.getMessage(), request, errorId);
+    }
+
+    @ExceptionHandler(InsufficientQuantityException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientQuantity(
+            InsufficientQuantityException e, HttpServletRequest request) {
+        String errorId = UUID.randomUUID().toString();
+        log.warn("ErrorId: {} | Insufficient quantity: {}", errorId, e.getMessage());
+
+        return buildResponse(HttpStatus.CONFLICT, e.getMessage(), request, errorId);
     }
 
     @ExceptionHandler(Exception.class)
